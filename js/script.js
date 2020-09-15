@@ -1,5 +1,5 @@
 'use strict';
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
   const tab = document.querySelectorAll('.info-header-tab'),
     info = document.querySelector('.info-header'),
     tabContent = document.querySelectorAll('.info-tabcontent');
@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', function () {
   // timer
   const deadLine = '2020-12-01';
 
-  function getTiemRemaining(endtime) {
+  const getTiemRemaining = (endtime) => {
     let t = Date.parse(endtime) - Date.now(), //Date.now - вертає дату відразу в мс; Date.parse - вертає к-сть мс до дати в аргументі від 1970р
       seconds = Math.floor((t / 1000) % 60), //floor повертає найменше ціле число, а % - повертає залишок від ділення у дільника (60)
       minutes = Math.floor((t / 1000 / 60) % 60),
@@ -49,9 +49,9 @@ window.addEventListener('DOMContentLoaded', function () {
       minutes: minutes,
       seconds: seconds,
     };
-  }
+  };
 
-  function setClock(id, endtime) {
+  const setClock = (id, endtime) => {
     const timer = document.getElementById(id), //передаємо id timer
       hours = timer.querySelector('.hours'),
       minutes = timer.querySelector('.minutes'),
@@ -69,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function () {
       }
     }
     updateClock();
-  }
+  };
 
   setClock('timer', deadLine);
 
@@ -84,15 +84,11 @@ window.addEventListener('DOMContentLoaded', function () {
     e.classList.add('more-splash');
   };
 
-  tabsMore.forEach(function (item) {
-    item.addEventListener('click', function () {
-      showTab();
-    });
+  tabsMore.forEach((item) => {
+    item.addEventListener('click', () => showTab());
   });
 
-  more.addEventListener('click', function () {
-    showTab();
-  });
+  more.addEventListener('click', () => showTab());
 
   overlay.addEventListener('click', (event) => {
     if (

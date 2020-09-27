@@ -81,14 +81,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const showTab = function (e) {
     overlay.style.display = 'block';
-    e.classList.add('more-splash');
+    e.target.classList.add('more-splash');
   };
 
   tabsMore.forEach((item) => {
-    item.addEventListener('click', () => showTab());
+    item.addEventListener('click', (e) => showTab(e));
   });
 
-  more.addEventListener('click', () => showTab());
+  more.addEventListener('click', (e) => showTab(e));
 
   overlay.addEventListener('click', (event) => {
     if (
@@ -98,5 +98,52 @@ window.addEventListener('DOMContentLoaded', () => {
       overlay.style.display = 'none';
       more.classList.remove('more-splash');
     }
+  });
+
+  // form
+  const message = {
+    loading: 'Загрузка',
+    success: 'Спасибо, мы скоро свяжемся',
+    failere: 'Что-то пошло не так',
+  };
+  const form = document.querySelectorAll('form'),
+    statusMassege = document.createElement('p');
+
+  statusMassege.classList.add('status');
+  form.forEach((item) => {
+    const input = item.querySelectorAll('input');
+    item.addEventListener('submit', function (e) {
+      //вішати треба на саму форму, а не кнопку сабміт
+      e.preventDefault();
+      item.appendChild(statusMassege);
+      setTimeout(() => item.removeChild(statusMassege), 2000);
+      let request = new XMLHttpRequest();
+      request.open('POST', 'server.php');
+      request.setRequestHeader(
+        'Content-Type',
+        'application/json; charset=utf-8'
+      );
+
+      let data = new FormData(item); //тягнеться з інпута атребут name
+      console.log(data);
+      var object = {};
+      data.forEach((value, key) => {
+        object[key] = value;
+      });
+      var json = JSON.stringify(object);
+      request.send(json);
+      request.addEventListener('readystatechange', () => {
+        console.log(request.readyState);
+        console.log(request.status);
+        if (request.readyState < 4) {
+          statusMassege.textContent = message.loading;
+        } else if (request.readyState === 4 && request.status === 200) {
+          statusMassege.textContent = message.success;
+        } else {
+          statusMassege.textContent = message.failere;
+        }
+        input.forEach((item) => (item.value = ''));
+      });
+    });
   });
 });

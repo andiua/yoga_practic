@@ -110,40 +110,56 @@ window.addEventListener('DOMContentLoaded', () => {
     statusMassege = document.createElement('p');
 
   statusMassege.classList.add('status');
-  form.forEach((item) => {
-    const input = item.querySelectorAll('input');
-    item.addEventListener('submit', function (e) {
-      //вішати треба на саму форму, а не кнопку сабміт
-      e.preventDefault();
-      item.appendChild(statusMassege);
-      setTimeout(() => item.removeChild(statusMassege), 2000);
+
+  function conectServer(data) {
+    return new Promise(function (res, rej) {
       let request = new XMLHttpRequest();
+      // add listeners
+      request.addEventListener('loadstart', () => {
+        statusMassege.textContent = message.loading;
+      });
+      request.addEventListener('load', () => {
+        if (request.status === 200 && request.status < 300) {
+          res();
+        } else {
+          rej(request.statusText);
+        }
+      });
+
       request.open('POST', 'server.php');
       request.setRequestHeader(
         'Content-Type',
         'application/json; charset=utf-8'
       );
 
-      let data = new FormData(item); //тягнеться з інпута атребут name
-      console.log(data);
       var object = {};
       data.forEach((value, key) => {
         object[key] = value;
       });
       var json = JSON.stringify(object);
       request.send(json);
-      request.addEventListener('readystatechange', () => {
-        console.log(request.readyState);
-        console.log(request.status);
-        if (request.readyState < 4) {
-          statusMassege.textContent = message.loading;
-        } else if (request.readyState === 4 && request.status === 200) {
+    });
+  }
+
+  form.forEach((item) => {
+    const input = item.querySelectorAll('input');
+    item.addEventListener('submit', function (e) {
+      //вішати треба на саму форму, а не кнопку сабміт
+      e.preventDefault();
+      item.appendChild(statusMassege);
+      let data = new FormData(item); //тягнеться з інпута атребут name
+      setTimeout(() => item.removeChild(statusMassege), 5000);
+      conectServer(data)
+        .then(() => {
           statusMassege.textContent = message.success;
-        } else {
+        })
+        .catch((err) => {
+          console.error(err);
           statusMassege.textContent = message.failere;
-        }
-        input.forEach((item) => (item.value = ''));
-      });
+        })
+        .then(() => {
+          input.forEach((item) => (item.value = ''));
+        });
     });
   });
 });

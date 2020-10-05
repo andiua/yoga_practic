@@ -162,4 +162,76 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
   });
+
+  // slider
+  const slides = document.querySelectorAll('.slider-item'),
+    prev = document.querySelector('.prev'),
+    next = document.querySelector('.next'),
+    dotsWrap = document.querySelector('.slider-dots'),
+    dots = document.querySelectorAll('.dot');
+  let slideIndex = 4;
+
+  const showSlides = (n) => {
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+    slides.forEach((slide) => (slide.style.display = 'none'));
+    dots.forEach((dot) => dot.classList.remove('dot-active'));
+    slides[slideIndex - 1].style.display = 'block';
+    dots[slideIndex - 1].classList.add('dot-active');
+  };
+  const changeSlide = (n) => {
+    showSlides((slideIndex += n));
+  };
+  const currentSlide = (n) => {
+    showSlides((slideIndex = n));
+  };
+  showSlides(slideIndex);
+  prev.addEventListener('click', () => {
+    changeSlide(-1);
+  });
+  next.addEventListener('click', () => {
+    changeSlide(1);
+  });
+  dotsWrap.addEventListener('click', (e) => {
+    for (let i = 0; i < dots.length; i++) {
+      if (e.target.classList.contains('dot') && e.target === dots[i]) {
+        currentSlide(i + 1);
+      }
+    }
+  });
+
+  // calculator
+  const counterInputs = document.querySelectorAll('.counter-block-input'),
+    place = document.getElementById('select'),
+    totalValue = document.getElementById('total');
+  let total = 0;
+
+  totalValue.textContent = total;
+
+  counterInputs.forEach((input) =>
+    input.addEventListener('change', () => {
+      if (![...counterInputs].every((elem) => elem.value)) {
+        totalValue.textContent = 0;
+      } else {
+        total =
+          [...counterInputs].reduce((a, b) => {
+            Number(a.value) + Number(b.value);
+          }) * 1000;
+        totalValue.textContent = total;
+      }
+    })
+  );
+  place.addEventListener('change', function () {
+    if (![...counterInputs].every((elem) => elem.value)) {
+      totalValue.textContent = 0;
+    } else {
+      let a = total;
+      console.dir(this);
+      totalValue.textContent = a * this.options[this.selectedIndex].value; // options & selectedIndex - властивості тега selector
+    }
+  });
 });

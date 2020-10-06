@@ -217,10 +217,24 @@ window.addEventListener('DOMContentLoaded', () => {
       if (![...counterInputs].every((elem) => elem.value)) {
         totalValue.textContent = 0;
       } else {
+        let methodWithMap = [...counterInputs]
+          .map((el) => el.value)
+          .reduce((a, b) => {
+            return Number(a) + Number(b);
+          }, 10);
+        let methodWithEachValue = [...counterInputs].reduce((a, b) => {
+          return Number(a.value) + Number(b.value);
+        });
+        let methodWithInitialValue = [...counterInputs].reduce((a, b) => {
+          return Number(a) + Number(b.value);
+        }, 10);
+        console.log(methodWithMap);
+        console.log(methodWithEachValue);
+        console.log(methodWithInitialValue);
         total =
           [...counterInputs].reduce((a, b) => {
-            Number(a.value) + Number(b.value);
-          }) * 1000;
+            return Number(a) + Number(b.value);
+          }, 0) * 1000;
         totalValue.textContent = total;
       }
     })

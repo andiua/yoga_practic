@@ -1,0 +1,18 @@
+# archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# logs
+*.log
+*.sql
+*.sqlite
+
+# Node, npm
+node_modules/
+npm-debug.log
